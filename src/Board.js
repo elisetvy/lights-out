@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import _ from "lodash";
 import Cell from "./Cell";
 import "./Board.css";
 
@@ -33,7 +34,20 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   function createBoard() {
     let initialBoard = [];
-    // TODO: create array-of-arrays of true/false values
+    // TODO: create array-of-arrays of true/false value
+    const totalCells = nrows * ncols;
+    const cellsOn = Math.floor(totalCells * chanceLightStartsOn);
+    const cellsOff = totalCells - cellsOn;
+
+    const t = Array(cellsOn).fill('t');
+    const f = Array(cellsOff).fill('f');
+
+    const shuffled = _.shuffle(t.concat(f));
+
+    for (let i = 0; i < shuffled.length; i += ncols) {
+        initialBoard.push(shuffled.slice(i, i + ncols));
+    }
+
     return initialBoard;
   }
 
@@ -55,7 +69,11 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
       // TODO: Make a (deep) copy of the oldBoard
 
+      const oldBoardCopy = [...board];
+
       // TODO: in the copy, flip this cell and the cells around it
+
+
 
       // TODO: return the copy
     });
