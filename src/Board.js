@@ -86,7 +86,7 @@ function Board({ nrows = 3, ncols = 3, chanceLightStartsOn = Math.random() }) {
   }
 
   // if the game is won, just show a winning msg & render nothing else
-  if (hasWon) {
+  if (hasWon()) {
     return <p>You won!!</p>;
   }
 
@@ -94,11 +94,12 @@ function Board({ nrows = 3, ncols = 3, chanceLightStartsOn = Math.random() }) {
 
   // make table board
   return (
-    <div>
-      {board.map(cell =>
-        <Cell flipCellsAroundMe={flipCellsAround} isLit={cell} />)};
-    </div>);
-
+    <table>
+      <tbody>
+      {board.map((row, y) => row.map((cell, x) => <Cell coord={`${y}-${x}`} key={x} flipCellsAroundMe={flipCellsAround} isLit={cell} />))}
+      </tbody>
+    </table>
+  );
   // TODO
 }
 
