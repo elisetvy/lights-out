@@ -28,7 +28,7 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows, ncols, chanceLightStartsOn }) {
+function Board({ nrows = 3, ncols = 3, chanceLightStartsOn = Math.random() }) {
   const [board, setBoard] = useState(createBoard());
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
@@ -39,13 +39,13 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
     const cellsOn = Math.floor(totalCells * chanceLightStartsOn);
     const cellsOff = totalCells - cellsOn;
 
-    const t = Array(cellsOn).fill('t');
-    const f = Array(cellsOff).fill('f');
+    const t = Array(cellsOn).fill(true);
+    const f = Array(cellsOff).fill(false);
 
     const shuffled = _.shuffle(t.concat(f));
 
     for (let i = 0; i < shuffled.length; i += ncols) {
-        initialBoard.push(shuffled.slice(i, i + ncols));
+      initialBoard.push(shuffled.slice(i, i + ncols));
     }
 
     return initialBoard;
@@ -53,6 +53,8 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
   function hasWon() {
     // TODO: check the board in state to determine whether the player has won.
+    const allCells = _.flatten(board);
+    return !allCells.includes(false);
   }
 
   function flipCellsAround(coord) {
@@ -73,17 +75,29 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
 
       // TODO: in the copy, flip this cell and the cells around it
 
-
+      const adjacentCells = [[y, x], [y + 1, x], [y - 1, x], [x + 1, y], [x - 1, y]];
+      for (let cells of adjacentCells) {
+        flipCell(...cells, oldBoardCopy);
+      }
 
       // TODO: return the copy
+      return oldBoardCopy;
     });
   }
 
   // if the game is won, just show a winning msg & render nothing else
+  if (hasWon) {
+    return <p>You won!!</p>;
+  }
 
   // TODO
 
   // make table board
+  return (
+    <div>
+      {board.map(cell =>
+        <Cell flipCellsAroundMe={flipCellsAround} isLit={cell} />)};
+    </div>);
 
   // TODO
 }
